@@ -1,0 +1,49 @@
+.container{
+	margin: 0 auto;
+	max-width: 1024px;
+}
+
+.main{
+	
+	&__wrapper{
+		margin-top: 208px;
+		display: flex;
+	}
+
+	&__balance{
+		text-align: center;
+		width: 342px;
+		border: 1px solid;
+		&-item{
+
+			span{
+				margin-right: 10px;
+			}
+
+		}
+	}
+
+
+	&__accounting{
+
+
+		&-options{
+
+			button{
+				height: 80px;
+				width: 341px;
+			}
+		}
+
+		&-table-item{
+			span{
+				margin-right: 10px;
+			}
+		}
+
+
+	}
+
+
+
+}
