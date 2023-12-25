@@ -1,12 +1,21 @@
 import "./Modal.scss"
 import { useRef, useState } from "react"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale, setDefaultLocale } from  "react-datepicker";
+import ru from 'date-fns/locale/ru';
 
-function Modal({modalActive,setModalActive,isExpense, price, setPrice, category, setCategory, addToTable}){
+registerLocale('ru', ru)
+setDefaultLocale('ru');
+
+function Modal({modalActive,setModalActive,isExpense, price, setPrice, category, setCategory, recordType, setRecordType}){
 
 //const [category, setCategory] = useState()
 //const [price, setPrice] = useState()
 const refPrice = useRef()
 const refCategory = useRef()
+const [startDate, setStartDate] = useState(new Date());
+
 	
 
 function CategoryButton(props) {
@@ -23,7 +32,7 @@ function CategoryButton(props) {
 
 function saveChanges(){
 	setCategory(refCategory.current)
-	setPrice(refPrice.current)
+	setPrice(parseInt(refPrice.current))
 	setModalActive(false)
 	//console.log(price,category)
 	
@@ -38,6 +47,7 @@ function ModalExpenses(){
 		<>
 			<h2>Расход</h2>
 			<input type="text" onChange={(e)=>{refPrice.current = e.target.value}} />
+			<DatePicker dateFormat="P" selected={startDate} onChange={(date)=>{setStartDate(date)}}/>
 			<h3>Категории</h3>
 			<ul>
 				<CategoryButton>Кафе и рестораны</CategoryButton>
@@ -56,7 +66,7 @@ function ModalIncomes(){
 	return(
 			<>
 			<h2>Доход</h2>
-			<input type="text" onChange={(e)=>{refPrice.current = e.target.value}}/>
+			<input type="tel" pattern="^-?[0-9]\d*\.?\d*$" onChange={(e)=>{refPrice.current = e.target.value}}/>
 			<h3>Категории</h3>
 			<ul>
 				<CategoryButton>
