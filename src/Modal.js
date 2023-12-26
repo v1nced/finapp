@@ -8,13 +8,13 @@ import ru from 'date-fns/locale/ru';
 registerLocale('ru', ru)
 setDefaultLocale('ru');
 
-function Modal({modalActive,setModalActive,isExpense, price, setPrice, category, setCategory, recordType, setRecordType}){
+function Modal({modalActive,setModalActive,isExpense, price, setPrice, category, setCategory, recordType, setRecordType, startDate, setStartDate}){
 
 //const [category, setCategory] = useState()
 //const [price, setPrice] = useState()
 const refPrice = useRef()
 const refCategory = useRef()
-const [startDate, setStartDate] = useState(new Date());
+
 
 	
 
@@ -47,7 +47,8 @@ function ModalExpenses(){
 		<>
 			<h2>Расход</h2>
 			<input type="text" onChange={(e)=>{refPrice.current = e.target.value}} />
-			<DatePicker dateFormat="P" selected={startDate} onChange={(date)=>{setStartDate(date)}}/>
+			<DatePicker dateFormat="P" selected={startDate} onChange={(date)=>{console.log(date)
+				setStartDate(date)}}/>
 			<h3>Категории</h3>
 			<ul>
 				<CategoryButton>Кафе и рестораны</CategoryButton>
@@ -67,20 +68,17 @@ function ModalIncomes(){
 			<>
 			<h2>Доход</h2>
 			<input type="tel" pattern="^-?[0-9]\d*\.?\d*$" onChange={(e)=>{refPrice.current = e.target.value}}/>
+			<DatePicker dateFormat="P" selected={startDate} onChange={(date)=>{setStartDate(date)}}/>
 			<h3>Категории</h3>
 			<ul>
-				<CategoryButton>
-				Зарплата
-				</CategoryButton>
-				<CategoryButton>
-				Депозит
-				</CategoryButton>
+				<CategoryButton>Зарплата</CategoryButton>
+				<CategoryButton>Депозит</CategoryButton>
 				<CategoryButton>Премия</CategoryButton>
 				<CategoryButton>Подарок</CategoryButton>
 				<CategoryButton>Прибыль от продажи</CategoryButton>
 			</ul>
 			<button onClick={saveChanges}>Сохранить</button>
-					<button onClick={()=>{setModalActive(false)}}>Отмена</button>
+			<button onClick={()=>{setModalActive(false)}}>Отмена</button>
 		</>
 	)
 }

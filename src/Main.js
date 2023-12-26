@@ -3,6 +3,7 @@ import "./Main.scss"
 import Modal from "./Modal"
 import AccountTable from "./AccountTable"
 import { useEffect } from "react"
+import DatePicker from "react-datepicker"
 
 function Main(){
 
@@ -13,6 +14,7 @@ function Main(){
 	const priceRef = useRef(price)
 	const	[recordType, setRecordType] = useState()
 	const [balance, setBalance] = useState(500000)
+	const [startDate, setStartDate] = useState(new Date());
 
 	const [list,setList] = useState([])
 
@@ -21,9 +23,14 @@ function spaceBetweenNum(int){
 	return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
 }
 
-function deleteRecord(id){
-	console.log(id)
+function deleteRecord(id, price, isExpense){
+
+	price = parseInt(price)
+	console.log(price)
 	setList(list.filter(item=>item.id !== id))
+
+	setBalance(isExpense ? balance+price : balance-price)
+
 }
 
 
@@ -38,8 +45,10 @@ function deleteRecord(id){
 				//console.log(typeof(price))
 				setBalance(balance+price)
 			}
+			
+			console.log(startDate)
 
-			const updateList = [...list,{"price":price,"category":category,"isExpense":isExpense, "id":list.length}]
+			const updateList = [...list,{"price":price,"category":category,"isExpense":isExpense, "date":startDate, "id":list.length}]
 
 			setList(updateList)
 
@@ -68,16 +77,21 @@ function deleteRecord(id){
 							<div className="main__balance-item">
 								<span>Карта</span>
 								<span>{spaceBetweenNum(balance)} тг.</span>
+								<button>edit</button>
 							</div>
 						</div>
 						<div className="main__accounting">
 							<div className="main__accounting-options">
 								<button
-								onClick={()=>{setModalActive(true)
-								setIsExpense(false)
-								}}>Доход</button>
-								<button onClick={()=>{setModalActive(true)
-								setIsExpense(true)}}>Расход</button>
+									onClick={()=>{setModalActive(true)
+																setIsExpense(false)}
+													}
+								>Доход</button>
+								<button 
+									onClick={()=>{setModalActive(true)
+																setIsExpense(true)}
+													}
+								>Расход</button>
 							</div>
 							<div className="main__accounting-table">
 								<div className="main__accounting-table-item">
@@ -86,11 +100,13 @@ function deleteRecord(id){
 										return (
 										<AccountTable 
 											category={data.category} 
-											price={spaceBetweenNum(data.price)} 
-											type={data.isExpense} 
+											price={data.price}
+											spaceBetweenNum={spaceBetweenNum} 
+											isExpense={data.isExpense} 
 											key={i} 
+											startDate={startDate}
 											id={data.id}
-											deleteRecord={(id)=>{deleteRecord(id)}}	
+											deleteRecord={(id, price, isExpense)=>{deleteRecord(id, price, isExpense)}}	
 										/>)
 									})}
 									
@@ -109,7 +125,10 @@ function deleteRecord(id){
 				category={category} 
 				setCategory={setCategory} 
 				recordType={recordType} 
-				setRecordType={setRecordType}/>
+				setRecordType={setRecordType}
+				setStartDate={setStartDate}
+				startDate={startDate}
+				/>
 			</>
 	)
 }
