@@ -15,6 +15,7 @@ function Main(){
 	const	[recordType, setRecordType] = useState()
 	const [balance, setBalance] = useState(500000)
 	const [startDate, setStartDate] = useState(new Date());
+	const [editMode, setEditMode] = useState(false)
 
 	const [list,setList] = useState([])
 
@@ -76,8 +77,11 @@ function deleteRecord(id, price, isExpense){
 							<h2>Мои счета</h2>
 							<div className="main__balance-item">
 								<span>Карта</span>
-								<span>{spaceBetweenNum(balance)} тг.</span>
-								<button>edit</button>
+								{editMode ? "" : <span>{spaceBetweenNum(balance)} тг.</span>}
+								{editMode ? (<input placeholder={spaceBetweenNum(balance)} onChange={(e)=>(setBalance(parseInt(e.target.value)))}/>): ""}
+								<button onClick={()=>{
+									setEditMode(!editMode)
+								}}>{editMode ? "save" : "edit"}</button>
 							</div>
 						</div>
 						<div className="main__accounting">
