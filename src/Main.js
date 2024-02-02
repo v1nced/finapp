@@ -1,9 +1,13 @@
-import { useRef, useState } from "react"
+import { createContext, useContext, useRef, useState } from "react"
 import "./Main.scss"
 import Modal from "./Modal"
 import AccountTable from "./AccountTable"
 import { useEffect } from "react"
 import DatePicker from "react-datepicker"
+import { format } from 'date-fns'
+import Balance from "./Balance"
+import { MainContext, MainProvider } from "./MainContext"
+
 
 function Main(){
 
@@ -13,16 +17,25 @@ function Main(){
 	const [category, setCategory] = useState()
 	const priceRef = useRef(price)
 	const	[recordType, setRecordType] = useState()
-	const [balance, setBalance] = useState(500000)
+	const {balan, edit, between} = useContext(MainContext)
+	const [balance, setBalance] = balan
+	const [editMode, setEditMode] = edit
+	const [spaceBetweenNum] = between
+//	const setBalance = useContext(MainContext)
+//	const setEditMode = useContext(MainContext)
+//	const editMode = useContext(MainContext)
+//	const spaceBetweenNum = useContext(MainContext)
 	const [startDate, setStartDate] = useState(new Date());
-	const [editMode, setEditMode] = useState(false)
+	
 
 	const [list,setList] = useState([])
 
-
-function spaceBetweenNum(int){
+	
+/* function spaceBetweenNum(int){
 	return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-}
+} */
+
+
 
 function deleteRecord(id, price, isExpense){
 
@@ -46,15 +59,23 @@ function deleteRecord(id, price, isExpense){
 				//console.log(typeof(price))
 				setBalance(balance+price)
 			}
-			
-			console.log(startDate)
 
-			const updateList = [...list,{"price":price,"category":category,"isExpense":isExpense, "date":startDate, "id":list.length}]
+			
+			console.log(format(startDate, "dd.MM.yy" ))
+
+			const updateList = [...list,{"price":price,"category":category,"isExpense":isExpense, "date":format(startDate, "dd.MM.yy" ), "id":list.length}]
 
 			setList(updateList)
 
-			//console.log(list)
+			console.log(list)
 
+			const groups = list.reduce((groups, item) => {
+				const group = (groups[item.date] || []);
+				group.push(item);
+				groups[item.date] = group;
+				return groups;
+			}, {});
+			console.log(Object.entries(groups))
 
 
 		/* setList(list.concat(<AccountTable category={category} price={spaceBetweenNum(price)} type={isExpense} key={list.length} id={list.length} deleteRecord={(id)=>{deleteRecord(id)}}/>))
@@ -76,12 +97,9 @@ function deleteRecord(id, price, isExpense){
 						<div className="main__balance">
 							<h2>Мои счета</h2>
 							<div className="main__balance-item">
-								<span>Карта</span>
-								{editMode ? "" : <span>{spaceBetweenNum(balance)} тг.</span>}
-								{editMode ? (<input placeholder={spaceBetweenNum(balance)} onChange={(e)=>(setBalance(parseInt(e.target.value)))}/>): ""}
-								<button onClick={()=>{
-									setEditMode(!editMode)
-								}}>{editMode ? "save" : "edit"}</button>
+								<Balance spaceBetweenNum={spaceBetweenNum}
+								></Balance>
+								
 							</div>
 						</div>
 						<div className="main__accounting">
@@ -100,7 +118,7 @@ function deleteRecord(id, price, isExpense){
 							<div className="main__accounting-table">
 								<div className="main__accounting-table-item">
 									{list.map((data,i)=>{
-										console.log(list)
+										//console.log(list)
 										return (
 										<AccountTable 
 											category={data.category} 
@@ -108,7 +126,7 @@ function deleteRecord(id, price, isExpense){
 											spaceBetweenNum={spaceBetweenNum} 
 											isExpense={data.isExpense} 
 											key={i} 
-											startDate={startDate}
+											startDate={data.date}
 											id={data.id}
 											deleteRecord={(id, price, isExpense)=>{deleteRecord(id, price, isExpense)}}	
 										/>)

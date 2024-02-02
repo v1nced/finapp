@@ -8,14 +8,24 @@ import ru from 'date-fns/locale/ru';
 registerLocale('ru', ru)
 setDefaultLocale('ru');
 
+
+
 function Modal({modalActive,setModalActive,isExpense, price, setPrice, category, setCategory, recordType, setRecordType, startDate, setStartDate}){
 
 //const [category, setCategory] = useState()
 //const [price, setPrice] = useState()
 const refPrice = useRef()
 const refCategory = useRef()
+const refDate = useRef()
 
+function DateChoose(){
+	const [date, setDate] = useState(new Date())
 
+	return <DatePicker dateFormat="P" selected={date} onChange={(date)=>{
+				setDate(date)
+				refDate.current = date
+				}}/>
+}
 	
 
 function CategoryButton(props) {
@@ -33,69 +43,48 @@ function CategoryButton(props) {
 function saveChanges(){
 	setCategory(refCategory.current)
 	setPrice(parseInt(refPrice.current))
+	setStartDate(refDate.current)
 	setModalActive(false)
-	//console.log(price,category)
+
 	
 }
 
-
-
-function ModalExpenses(){
-	
-
-	return(
-		<>
-			<h2>Расход</h2>
-			<input type="text" onChange={(e)=>{refPrice.current = e.target.value}} />
-			<DatePicker dateFormat="P" selected={startDate} onChange={(date)=>{console.log(date)
-				setStartDate(date)}}/>
-			<h3>Категории</h3>
-			<ul>
-				<CategoryButton>Кафе и рестораны</CategoryButton>
-				<CategoryButton>Транспорт</CategoryButton>
-				<CategoryButton>Жилье</CategoryButton>
-				<CategoryButton>Продукты</CategoryButton>
-				<CategoryButton>Здоровье</CategoryButton>
-			</ul>
-			<button onClick={saveChanges}>Сохранить</button>
-			<button onClick={()=>{setModalActive(false)}}>Отмена</button>
-		</>
-	)
-}
-
-function ModalIncomes(){
-	return(
-			<>
-			<h2>Доход</h2>
+function ModalAccount({title, children}){
+	return(<>
+		<h2>{title}</h2>
 			<input type="tel" pattern="^-?[0-9]\d*\.?\d*$" onChange={(e)=>{refPrice.current = e.target.value}}/>
-			<DatePicker dateFormat="P" selected={startDate} onChange={(date)=>{setStartDate(date)}}/>
+			<DateChoose ref={refDate.current}></DateChoose>
 			<h3>Категории</h3>
 			<ul>
-				<CategoryButton>Зарплата</CategoryButton>
-				<CategoryButton>Депозит</CategoryButton>
-				<CategoryButton>Премия</CategoryButton>
-				<CategoryButton>Подарок</CategoryButton>
-				<CategoryButton>Прибыль от продажи</CategoryButton>
+				{children}
 			</ul>
 			<button onClick={saveChanges}>Сохранить</button>
 			<button onClick={()=>{setModalActive(false)}}>Отмена</button>
-		</>
-	)
+	</>)
 }
-
-
-
-
-
-	
-
 
 	return(
 		<>
 			<div className={modalActive ? "modal active" : "modal"} onClick={()=>{setModalActive(false)}}>
 				<div className="modal__content" onClick={e => e.stopPropagation()}>
-					{isExpense ? <ModalExpenses/> : <ModalIncomes/>}
-					
+					{isExpense ?
+					<ModalAccount title="Расход">
+						<CategoryButton>Кафе и рестораны</CategoryButton>
+						<CategoryButton>Транспорт</CategoryButton>
+						<CategoryButton>Жилье</CategoryButton>
+						<CategoryButton>Продукты</CategoryButton>
+						<CategoryButton>Здоровье</CategoryButton>
+					</ModalAccount>
+					: 
+					<ModalAccount title="Доход">
+						<CategoryButton>Зарплата</CategoryButton>
+						<CategoryButton>Депозит</CategoryButton>
+						<CategoryButton>Премия</CategoryButton>
+						<CategoryButton>Подарок</CategoryButton>
+						<CategoryButton>Прибыль от продажи</CategoryButton>
+					</ModalAccount>					
+					}
+
 				</div>
 			</div>
 		</>
