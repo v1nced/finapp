@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker"
 import { format } from 'date-fns'
 import Balance from "./Balance"
 import { MainContext, MainProvider } from "./MainContext"
+import axios from "axios"
 
 
 function Main(){
@@ -36,11 +37,20 @@ function Main(){
 } */
 
 
+useEffect(()=>{
+	axios.get("https://65bf2a40dcfcce42a6f33c3b.mockapi.io/api/records")
+	.then(res=>{ console.log(res.data[0]["tables"])
+	}).catch(err=>{
+		console.log(err)
+	})
+	
+},[])
+
 
 function deleteRecord(id, price, isExpense){
 
 	price = parseInt(price)
-	console.log(price)
+	//console.log(price)
 	setList(list.filter(item=>item.id !== id))
 
 	setBalance(isExpense ? balance+price : balance-price)
@@ -61,7 +71,7 @@ function deleteRecord(id, price, isExpense){
 			}
 
 			
-			console.log(format(startDate, "dd.MM.yy" ))
+			//console.log(format(startDate, "dd.MM.yy" ))
 
 			const updateList = [...list,{"price":price,"category":category,"isExpense":isExpense, "date":format(startDate, "dd.MM.yy" ), "id":list.length}]
 
@@ -75,7 +85,7 @@ function deleteRecord(id, price, isExpense){
 				groups[item.date] = group;
 				return groups;
 			}, {});
-			console.log(Object.entries(groups))
+			//console.log(groups)
 
 
 		/* setList(list.concat(<AccountTable category={category} price={spaceBetweenNum(price)} type={isExpense} key={list.length} id={list.length} deleteRecord={(id)=>{deleteRecord(id)}}/>))
@@ -86,7 +96,7 @@ function deleteRecord(id, price, isExpense){
 
 	useEffect(()=>{
 		addToTable()
-	},[category])
+	},[price])
 
 
 	return(
@@ -117,7 +127,8 @@ function deleteRecord(id, price, isExpense){
 							</div>
 							<div className="main__accounting-table">
 								<div className="main__accounting-table-item">
-									{list.map((data,i)=>{
+									{
+										list.map((data,i)=>{
 										//console.log(list)
 										return (
 										<AccountTable 
@@ -130,7 +141,8 @@ function deleteRecord(id, price, isExpense){
 											id={data.id}
 											deleteRecord={(id, price, isExpense)=>{deleteRecord(id, price, isExpense)}}	
 										/>)
-									})}
+									})
+									}
 									
 								</div>
 							</div>

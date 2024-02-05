@@ -13,3 +13,4 @@ function AccountTable({category, price, isExpense, id, deleteRecord, spaceBetwee
 }
 
 export default AccountTable
+

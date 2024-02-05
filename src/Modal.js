@@ -20,7 +20,7 @@ const refDate = useRef()
 
 function DateChoose(){
 	const [date, setDate] = useState(new Date())
-
+	refDate.current = date
 	return <DatePicker dateFormat="P" selected={date} onChange={(date)=>{
 				setDate(date)
 				refDate.current = date
@@ -41,19 +41,31 @@ function CategoryButton(props) {
 }
 
 function saveChanges(){
+	if (!refCategory.current){
+		alert("Choose Category")
+	}
+	else if(!refPrice.current){
+		alert("Set Price")
+	}
+	else{
 	setCategory(refCategory.current)
 	setPrice(parseInt(refPrice.current))
 	setStartDate(refDate.current)
 	setModalActive(false)
 
+	}
+	
 	
 }
 
 function ModalAccount({title, children}){
+	refCategory.current = null
+	refPrice.current = null
+	
 	return(<>
 		<h2>{title}</h2>
 			<input type="tel" pattern="^-?[0-9]\d*\.?\d*$" onChange={(e)=>{refPrice.current = e.target.value}}/>
-			<DateChoose ref={refDate.current}></DateChoose>
+			<DateChoose ></DateChoose>
 			<h3>Категории</h3>
 			<ul>
 				{children}
