@@ -10,7 +10,7 @@ setDefaultLocale('ru');
 
 
 
-function Modal({modalActive,setModalActive,isExpense, price, setPrice, category, setCategory, recordType, setRecordType, startDate, setStartDate}){
+function Modal({modalActive,setModalActive,isExpense, price, setPrice, category, setCategory, recordType, setRecordType, startDate, setStartDate, balance, setBalance}){
 
 //const [category, setCategory] = useState()
 //const [price, setPrice] = useState()
@@ -52,6 +52,11 @@ function saveChanges(){
 	setPrice(parseInt(refPrice.current))
 	setStartDate(refDate.current)
 	setModalActive(false)
+	if (isExpense){
+		setBalance(balance-parseInt(refPrice.current))
+	}else{
+		setBalance(balance+parseInt(refPrice.current))
+	}
 
 	}
 	

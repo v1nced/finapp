@@ -39,7 +39,7 @@ function Main(){
 
 useEffect(()=>{
 	axios.get("https://65bf2a40dcfcce42a6f33c3b.mockapi.io/api/records")
-	.then(res=>{ console.log(res.data[0]["tables"])
+	.then(res=>{ setList(res.data)
 	}).catch(err=>{
 		console.log(err)
 	})
@@ -56,26 +56,43 @@ function deleteRecord(id, price, isExpense){
 	setBalance(isExpense ? balance+price : balance-price)
 
 }
-
-
-
-	function addToTable(){
+	function updateBalance(){
 		if(price >= 0){
 
-			if(isExpense){
+/* 			if(isExpense){
 				//console.log(typeof(price))
 				setBalance(balance-price)
 			}else{
 				//console.log(typeof(price))
 				setBalance(balance+price)
-			}
+			} */
+		}
+	}
+
+
+	function addToTable(){
+		if(price >= 0){
+
+		/* 	if(isExpense){
+				//console.log(typeof(price))
+				setBalance(balance-price)
+			}else{
+				//console.log(typeof(price))
+				setBalance(balance+price)
+			} */
 
 			
 			//console.log(format(startDate, "dd.MM.yy" ))
 
-			const updateList = [...list,{"price":price,"category":category,"isExpense":isExpense, "date":format(startDate, "dd.MM.yy" ), "id":list.length}]
+			const updateList = [...list,{"price":price,"category":category,"isExpense":isExpense, "date":format(startDate, "dd.MM.yy" ), "id":list.length, "balance":balance}]
 
 			setList(updateList)
+
+			axios.post("https://65bf2a40dcfcce42a6f33c3b.mockapi.io/api/records", {"price":price,"category":category,"isExpense":isExpense, "date":format(startDate, "dd.MM.yy" ), "id":list.length, "balance":balance}).then((response) => {
+				console.log(response.status, response.data);
+			});
+
+			
 
 			console.log(list)
 
@@ -95,8 +112,17 @@ function deleteRecord(id, price, isExpense){
 	}
 
 	useEffect(()=>{
+		updateBalance()
 		addToTable()
+		
+		
 	},[price])
+
+
+/* 	
+	useEffect(()=>{
+		console.log(balance)
+	},[balance]) */
 
 
 	return(
@@ -151,6 +177,8 @@ function deleteRecord(id, price, isExpense){
 				</div>
 			</div>
 			<Modal 
+				setBalance={setBalance}
+				balance={balance}
 				modalActive={modalActive} 
 				setModalActive={setModalActive} 
 				isExpense={isExpense} 
