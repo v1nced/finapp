@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 
 function AccountTable({category, price, isExpense, id, deleteRecord, spaceBetweenNum, startDate}){
 

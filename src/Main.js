@@ -1,12 +1,11 @@
-import { createContext, useContext, useRef, useState } from "react"
+import { useContext, useState } from "react"
 import "./Main.scss"
 import Modal from "./Modal"
 import AccountTable from "./AccountTable"
 import { useEffect } from "react"
-import DatePicker from "react-datepicker"
 import { format } from 'date-fns'
 import Balance from "./Balance"
-import { MainContext, MainProvider } from "./MainContext"
+import { MainContext } from "./MainContext"
 import axios from "axios"
 
 
@@ -16,33 +15,25 @@ function Main(){
 	const [isExpense, setIsExpense] = useState(false)
 	const [price, setPrice] = useState()
 	const [category, setCategory] = useState()
-	const priceRef = useRef(price)
 	const	[recordType, setRecordType] = useState()
-	const {balan, edit, between} = useContext(MainContext)
+	const {balan, between} = useContext(MainContext)
 	const [balance, setBalance] = balan
-	const [editMode, setEditMode] = edit
 	const [spaceBetweenNum] = between
-//	const setBalance = useContext(MainContext)
-//	const setEditMode = useContext(MainContext)
-//	const editMode = useContext(MainContext)
-//	const spaceBetweenNum = useContext(MainContext)
 	const [startDate, setStartDate] = useState(new Date());
 	
 
 	const [list,setList] = useState([])
 
 	
-/* function spaceBetweenNum(int){
-	return int.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-} */
 
 
 useEffect(()=>{
 	axios.get("https://65bf2a40dcfcce42a6f33c3b.mockapi.io/api/records")
-	.then(res=>{ setList(res.data)
+	.then(res=>{ setList(res.data[0]["rows"])
 	}).catch(err=>{
 		console.log(err)
 	})
+	
 	
 },[])
 
@@ -56,33 +47,9 @@ function deleteRecord(id, price, isExpense){
 	setBalance(isExpense ? balance+price : balance-price)
 
 }
-	function updateBalance(){
-		if(price >= 0){
-
-/* 			if(isExpense){
-				//console.log(typeof(price))
-				setBalance(balance-price)
-			}else{
-				//console.log(typeof(price))
-				setBalance(balance+price)
-			} */
-		}
-	}
-
 
 	function addToTable(){
 		if(price >= 0){
-
-		/* 	if(isExpense){
-				//console.log(typeof(price))
-				setBalance(balance-price)
-			}else{
-				//console.log(typeof(price))
-				setBalance(balance+price)
-			} */
-
-			
-			//console.log(format(startDate, "dd.MM.yy" ))
 
 			const updateList = [...list,{"price":price,"category":category,"isExpense":isExpense, "date":format(startDate, "dd.MM.yy" ), "id":list.length, "balance":balance}]
 
@@ -102,27 +69,17 @@ function deleteRecord(id, price, isExpense){
 				groups[item.date] = group;
 				return groups;
 			}, {});
-			//console.log(groups)
-
-
-		/* setList(list.concat(<AccountTable category={category} price={spaceBetweenNum(price)} type={isExpense} key={list.length} id={list.length} deleteRecord={(id)=>{deleteRecord(id)}}/>))
-		} */
 	}
 	
 	}
 
 	useEffect(()=>{
-		updateBalance()
 		addToTable()
 		
 		
 	},[price])
 
 
-/* 	
-	useEffect(()=>{
-		console.log(balance)
-	},[balance]) */
 
 
 	return(
