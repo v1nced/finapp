@@ -1,5 +1,5 @@
 import React from "react";
-import Main from "./Main";
+import Login from "./Login.js";
 import { MainProvider } from "./MainContext";
 import "./App.scss"
 
@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <MainProvider>
-        <Main />
+        <Login />
       </MainProvider>
     </div>
   );
