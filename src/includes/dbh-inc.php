@@ -2,7 +2,7 @@
 
 $dsn = "mysql:host=localhost;dbname=finappdb";
 $dbusername = "vince";
-$dbpassword = "GoodspringS)3@";
+$dbpassword = "";
 
 try {
 	$pdo = new PDO($dsn, $dbusername, $dbpassword);
